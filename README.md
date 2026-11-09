@@ -8,6 +8,15 @@ Beyond model inference, the project emphasizes building a reproducible machine l
 
 **Tech Stack:** Python, PyTorch, facenet-pytorch, NumPy, TensorFlow Datasets, Docker, pytest, YAML
 
+## Requirements
+
+- Python 3.11 (recommended)
+- pip
+- Git
+- Docker (optional)
+
+The project uses TensorFlow 2.15.0 and related dependencies that require compatible Python and package versions. Python 3.11 is recommended for reproducing the original environment.
+
 ## Key Features
 
 - **Deterministic Data Processing:** Reproducible dataset preparation and identity-aware data splitting.
@@ -254,7 +263,7 @@ source .venv/bin/activate
 Activate the environment on Windows PowerShell:
 
 ```powershell
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
 ### 3. Install Dependencies
@@ -288,6 +297,34 @@ outputs/manifest.json
 ```
 
 The manifest summarizes information including the dataset splits, counts, random seed, and split policy.
+
+### Windows: LFW Dataset Extraction
+
+On Windows, TensorFlow Datasets may encounter a `[WinError 206]` error when extracting the LFW dataset because some generated file paths exceed Windows' traditional path-length limit.
+
+If this happens, you can temporarily map your repository directory to a shorter drive path using PowerShell.
+
+From the repository's original directory, run:
+
+```powershell
+$repo = (Get-Location).Path
+subst X: "$repo"
+Set-Location X:\
+```
+
+Then retry dataset ingestion:
+
+```powershell
+python scripts/ingest.py --config configs/m1.yaml
+```
+
+This allows TensorFlow Datasets to use shorter extraction paths without modifying the project's configuration or moving the repository.
+
+The drive mapping is temporary and may need to be recreated after restarting Windows. Use an available drive letter if `X:` is already in use.
+
+**Note:** This workaround is only needed on Windows when path-length errors occur. Linux and macOS users can follow the standard instructions.
+
+**Docker note:** If Docker has trouble accessing the mapped `X:` drive, return to the repository's original directory before running Docker commands.
 
 ### Generate Verification Pairs
 
@@ -387,6 +424,11 @@ python scripts/run_inference.py \
   --right lfw/<person_name>/<image_2>.jpg
 ```
 
+Example:
+```bash
+python scripts/run_inference.py --config configs/m1.yaml --left lfw/Zoran_Djindjic/Zoran_Djindjic_0001.jpg --right lfw/Zoran_Djindjic/Zoran_Djindjic_0002.jpg
+```
+
 Image paths should be provided relative to the LFW dataset root using the format:
 
 ```text
@@ -429,27 +471,22 @@ The Docker environment uses the lightweight inference dependency configuration t
 
 ## Run Tests
 
-Run the evaluation metric tests:
+The project includes automated tests for evaluation metrics, threshold selection, validation logic, and pipeline integration. The test suite contains six tests, all of which passed during local reproducibility testing using Python 3.11 on Windows.
+
+Run the complete test suite:
 
 ```bash
-pytest tests/test_metrics.py
+python -m pytest
 ```
 
-To run the complete available test suite:
-
-```bash
-pytest
-```
+The integration test uses the configured LFW dataset root (`data/lfw`) and requires the dataset and verification pairs to be prepared beforehand.
 
 ## Run Performance Profiling
 
 To reproduce profiling across multiple batch sizes:
 
 ```bash
-python scripts/profiling.py \
-  --config configs/m1.yaml \
-  --pairs outputs/pairs/val.csv \
-  --batch_sizes 1 5 10 25
+python scripts/profiling.py --config configs/m1.yaml --pairs outputs/pairs/val.csv --batch_sizes 1 5 10 25
 ```
 
 The profiling workflow reports latency breakdowns across the major stages of the inference pipeline.
