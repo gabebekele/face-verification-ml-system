@@ -110,7 +110,7 @@ outputs/pairs/test.csv
 Run the profiling script using validation image pairs:
 
 ```bash
-python scripts/profiling.py --config configs/m4.yaml --pairs outputs/pairs/val.csv --batch_sizes 1 5 10 25
+python scripts/profiling.py --config configs/m1.yaml --pairs outputs/pairs/val.csv --batch_sizes 1 5 10 25
 ```
 
 The profiler measures preprocessing, embedding generation, similarity scoring, end-to-end latency, and throughput across different batch sizes.
