@@ -134,41 +134,57 @@ This makes it possible to examine not only aggregate performance metrics, but al
 
 ## Performance Profiling
 
-The final system includes profiling tools for measuring inference performance across different batch sizes.
+The final face verification system includes profiling tools to evaluate CPU inference performance across different batch sizes.
 
 The profiler measures:
 
-- Image preprocessing time
-- Embedding-generation time
-- Similarity-scoring time
-- Total inference latency
-- Performance changes across batch sizes
+- Image preprocessing latency
+- Face embedding generation latency
+- Cosine similarity scoring latency
+- Average end-to-end inference latency
+- 95th-percentile (p95) latency
+- Throughput in image pairs per second
 
-This provides a baseline for understanding the computational behavior of the verification pipeline and identifying potential bottlenecks.
+### CPU Profiling Results
+
+Performance was measured on an Intel Core i5-8350U CPU using validation image pairs from the LFW dataset.
+
+| Batch Size | Avg. Latency (s/pair) | p95 Latency (s/pair) | Throughput (pairs/s) |
+| ---------- | --------------------- | -------------------- | -------------------- |
+| 1          | 1.0695                | 1.0695               | 0.93                 |
+| 5          | 0.1398                | 0.1558               | 7.15                 |
+| 10         | 0.1383                | 0.1559               | 7.23                 |
+| 25         | 0.1312                | 0.1639               | 7.62                 |
+
+### Key Findings
+
+Embedding generation was the primary computational bottleneck, accounting for most of the inference time. Cosine similarity scoring contributed very little overhead.
+
+Throughput improved as more image pairs were processed, reaching approximately **7.62 pairs per second**, with an average inference latency of **0.131 seconds per pair** in the 25-pair run.
+
+The single-pair run was substantially slower, likely due to initialization or model warmup overhead. These results represent local CPU performance and may vary across hardware and execution environments.
+
+The complete profiling methodology and latency breakdowns are available in the [Profiling Report](reports/Profiling%20report.pdf).
 
 ## Engineering and Reproducibility
 
-The project is organized as a reusable ML pipeline rather than a notebook-only experiment.
+The project is structured as a modular machine learning pipeline rather than a notebook-only experiment, with an emphasis on reproducibility, maintainability, and consistent evaluation.
 
-Engineering and reproducibility features include:
+Key engineering features include:
 
-- Modular Python source code
-- YAML-based configuration
-- Fixed random seeds
-- Deterministic data handling
-- Automated tests
-- Reusable command-line scripts
-- Experiment-specific artifacts
-- Docker support
-- Performance profiling
-- System documentation
-- Reproducibility documentation
+- **Modular Code:** Reusable Python modules and command-line scripts for data processing, evaluation, and inference.
 
-A reproducibility checklist is included at:
+- **Configuration Management:** YAML configuration files for managing experiment settings.
 
-```text
-reports/reproducibility_checklist.md
-```
+- **Deterministic Processing:** Fixed random seeds and identity-aware dataset splitting for reproducible results.
+
+- **Experiment Tracking:** Organized evaluation outputs, including metrics, ROC curves, and error analysis artifacts.
+
+- **Automated Testing:** Unit tests using pytest to validate evaluation functionality.
+
+- **Containerization:** Docker support for reproducible inference environments.
+  
+A detailed reproducibility checklist is included [here](reports/reproducibility_checklist.md)
 
 The final system version is tagged:
 
