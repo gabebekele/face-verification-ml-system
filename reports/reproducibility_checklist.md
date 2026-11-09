@@ -1,8 +1,7 @@
 # Reproducibility Checklist
 
 1. Clone repository
-git clone https://github.com/gabebekele/face-verification-ml-system.git
-cd face-verification-ml-system
+git clone https://github.com/gabebekele/face-verification-ml-system.git; cd face-verification-ml-system
 
 2. Create virtual environment
 python3 -m venv .venv
