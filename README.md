@@ -1,23 +1,59 @@
 # Face Verification ML System
 
-A reproducible face verification pipeline built with **Python and PyTorch** using pretrained InceptionResnetV1 embeddings, cosine similarity, validation-based threshold calibration, automated evaluation, Docker-containerized inference, and latency profiling.
+An end-to-end face verification system built with Python and PyTorch that determines whether two facial images belong to the same person using pretrained FaceNet embeddings and cosine similarity.
 
-## Overview
+The system uses the Labeled Faces in the Wild (LFW) dataset and InceptionResnetV1 pretrained on VGGFace2 to generate facial embeddings. A validation-selected similarity threshold is then used to classify image pairs as matching or non-matching identities.
 
-This project implements an end-to-end face verification system using the **Labeled Faces in the Wild (LFW)** dataset.
+Beyond model inference, the project emphasizes building a reproducible machine learning pipeline, including data processing, experimentation, model evaluation, automated testing, Docker-based inference, and performance profiling.
 
-The system generates facial embeddings using **InceptionResnetV1 pretrained on VGGFace2**, compares pairs of embeddings using cosine similarity, and applies a validation-selected threshold to determine whether two images represent the same identity.
+**Tech Stack:** Python, PyTorch, facenet-pytorch, NumPy, TensorFlow Datasets, Docker, pytest, YAML
 
-The project focuses on the broader machine learning lifecycle rather than model inference alone, including:
+## Key Features
 
-- Deterministic data processing
-- Reproducible experimentation
-- Validation-based threshold selection
-- Model evaluation and error analysis
-- Automated testing
-- Docker-based inference
-- Latency and throughput profiling
-- System and reproducibility documentation
+- **Deterministic Data Processing:** Reproducible dataset preparation and identity-aware data splitting.
+
+- **Face Embedding Generation:** Pretrained InceptionResnetV1 model for extracting facial features.
+
+- **Similarity-Based Verification:** Cosine similarity scoring with validation-based threshold selection.
+
+- **Reproducible Experimentation:** Configuration-driven experiments and automated evaluation.
+
+- **Model Evaluation:** Performance metrics, ROC analysis, and error analysis.
+
+- **Automated Testing:** Unit tests using pytest.
+
+- **Docker-Based Inference:** Containerized environment for reproducible execution.
+
+- **Performance Profiling:** CPU inference latency and throughput measurements.
+
+## Key Results
+
+The final face verification system uses pretrained InceptionResnetV1 embeddings and cosine similarity with a validation-selected operating threshold.
+
+### Final System
+
+| Metric | Result |
+|---|---|
+| Embedding Model | InceptionResnetV1 (VGGFace2) |
+| Similarity Metric | Cosine Similarity |
+| Operating Threshold | 0.3061 |
+| Average CPU Inference Latency | 0.1312 seconds per pair |
+| CPU Throughput | 7.62 pairs per second |
+
+CPU performance was measured on an Intel Core i5-8350U using 25 validation image pairs. The reported latency and throughput represent a local CPU baseline.
+
+### Earlier Baseline Experiments
+
+Before implementing pretrained face embeddings, the project evaluated raw-pixel similarity using different normalization and threshold-selection strategies.
+
+| Experiment | Balanced Accuracy |
+|---|---|
+| Raw-Pixel Baseline | 49.50% |
+| Z-Score Normalization | 58.75% |
+
+These experiments demonstrated the limitations of raw-pixel comparisons, particularly their sensitivity to differences in lighting, background, and facial appearance.
+
+The final system replaces raw-pixel features with pretrained facial embeddings. The baseline accuracy values above do not represent the classification performance of the final FaceNet system.
 
 ## System Pipeline
 
@@ -43,23 +79,6 @@ Validation-Calibrated Threshold
     v
 Same Identity / Different Identity
 ```
-
-## Key Features
-
-- End-to-end face verification workflow
-- Pretrained deep-learning face embeddings
-- Cosine-similarity verification
-- Validation-based operating-threshold selection
-- Deterministic dataset processing
-- Identity-aware train, validation, and test splits
-- Configuration-driven experiments using YAML
-- Vectorized similarity computation
-- Automated false-positive and false-negative analysis
-- Unit testing with `pytest`
-- Docker-containerized inference
-- Batch-size, latency, and throughput profiling
-- System Card documenting intended use, limitations, and potential risks
-- Reproducibility checklist for running the project from a clean environment
 
 ## Methodology
 
@@ -211,47 +230,16 @@ face-verification-ml-system/
 
 Generated datasets, outputs, and cached files are excluded from version control.
 
-## Technologies
+## Installation and Setup
 
-### Machine Learning
-
-- Python
-- PyTorch
-- `facenet-pytorch`
-- InceptionResnetV1
-- VGGFace2 pretrained weights
-- Face embeddings
-- Cosine similarity
-
-### Data and Evaluation
-
-- NumPy
-- Labeled Faces in the Wild
-- `tensorflow_datasets`
-- Vectorized similarity computation
-- Threshold calibration
-- Error analysis
-- Performance profiling
-
-### Engineering
-
-- Docker
-- `pytest`
-- YAML
-- Git
-- GitHub
-- Command-line tooling
-
-# How to Run
-
-## 1. Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/gabebekele/face-verification-ml-system.git
 cd face-verification-ml-system
 ```
 
-## 2. Create a Virtual Environment
+### 2. Create a Virtual Environment
 
 ```bash
 python3 -m venv .venv
@@ -269,7 +257,7 @@ Activate the environment on Windows PowerShell:
 .venv\Scripts\Activate.ps1
 ```
 
-## 3. Install Dependencies
+### 3. Install Dependencies
 
 For the full experimentation and evaluation environment:
 
@@ -283,9 +271,9 @@ A lightweight dependency environment is also provided for inference:
 pip install -r requirements-m3.txt
 ```
 
-# Reproduce the Data Pipeline
+## Reproduce the Data Pipeline
 
-## Deterministic Dataset Ingestion
+### Deterministic Dataset Ingestion
 
 Run:
 
@@ -301,7 +289,7 @@ outputs/manifest.json
 
 The manifest summarizes information including the dataset splits, counts, random seed, and split policy.
 
-## Generate Verification Pairs
+### Generate Verification Pairs
 
 Run:
 
@@ -319,7 +307,7 @@ outputs/pairs/test.csv
 
 Each file contains positive and negative face-verification pairs for its respective dataset split.
 
-## Run the Similarity Benchmark
+### Run the Similarity Benchmark
 
 Run:
 
@@ -335,7 +323,7 @@ Results are saved to:
 outputs/bench_results.txt
 ```
 
-# Run Model Evaluation
+## Reproduce Raw-Pixel Baseline Experiments
 
 The evaluation framework supports configuration-driven experimental runs and command-line overrides.
 
@@ -388,7 +376,7 @@ errors/fp/
 errors/fn/
 ```
 
-# Run Face Verification Inference
+## Run Face Verification Inference
 
 To compare two face images locally:
 
@@ -412,15 +400,15 @@ The inference pipeline returns information including:
 - Confidence
 - Inference latency
 
-# Run with Docker
+## Run with Docker
 
-## Build the Docker Image
+### Build the Docker Image
 
 ```bash
 docker build -t face-verifier .
 ```
 
-## Run Inference in Docker
+### Run Inference in Docker
 
 ```bash
 docker run --rm -v "${PWD}:/app" face-verifier \
@@ -439,7 +427,7 @@ lfw/Zoran_Djindjic/Zoran_Djindjic_0002.jpg
 
 The Docker environment uses the lightweight inference dependency configuration to reduce unnecessary build complexity.
 
-# Run Tests
+## Run Tests
 
 Run the evaluation metric tests:
 
@@ -453,7 +441,7 @@ To run the complete available test suite:
 pytest
 ```
 
-# Run Performance Profiling
+## Run Performance Profiling
 
 To reproduce profiling across multiple batch sizes:
 
@@ -472,7 +460,7 @@ Additional profiling documentation is available at:
 reports/Profiling report.pdf
 ```
 
-# Outputs and Documentation
+## Outputs and Documentation
 
 Important project artifacts are organized under the `outputs/` and `reports/` directories.
 
@@ -505,7 +493,7 @@ The **profiling report** documents preprocessing, embedding, scoring, and total 
 
 The **reproducibility checklist** provides the steps required to reproduce the system from a clean clone.
 
-# Limitations
+## Limitations
 
 This system is an experimental machine learning project and is **not intended for production identity verification, authentication, surveillance, law enforcement, or other security-critical applications**.
 
@@ -518,27 +506,6 @@ Important limitations include:
 - Performance measured on LFW should not be assumed to generalize to other populations or deployment environments.
 - Confidence represents distance from the decision threshold and should not be interpreted as a calibrated probability.
 - Additional fairness, robustness, and deployment validation would be required before considering real-world use.
-
-
-# What This Project Demonstrates
-
-This project demonstrates experience with:
-
-- Building reproducible machine learning pipelines
-- Working with pretrained deep-learning models
-- Computer vision and face embeddings
-- Embedding-based inference
-- Validation-based threshold calibration
-- Model evaluation and error analysis
-- Deterministic data engineering
-- Configuration-driven experimentation
-- Automated testing
-- Docker-based inference
-- Latency and throughput profiling
-- Technical ML documentation
-- Production-oriented machine learning engineering practices
-
-The project reinforced the importance of treating machine learning as a **complete system engineering problem**, rather than focusing only on model development or a single performance metric.
 
 ## Acknowledgments
 
