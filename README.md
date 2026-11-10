@@ -282,7 +282,7 @@ A detailed reproducibility checklist is included [here](reports/reproducibility_
 The final system version is tagged:
 
 ```text
-v2.2-final
+v2.3-final
 ```
 
 ## Repository Structure
