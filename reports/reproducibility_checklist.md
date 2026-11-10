@@ -154,20 +154,98 @@ Run the tests after completing dataset ingestion and verification pair generatio
 ```bash
 python -m pytest
 ```
+The project includes six automated tests covering evaluation metrics, threshold selection, validation logic, and pipeline integration.
 
+All six tests passed during local reproducibility testing using Python 3.11 on Windows.
+
+## 10. Final FaceNet Evaluation and Verification
+
+The following scripts reproduce the final FaceNet evaluation results and verify threshold selection and dataset separation.
+
+Run all commands from the project root after installing the dependencies from `requirements.txt` and preparing the LFW dataset and verification pairs.
+
+### 10.1 Verify Threshold Selection
+
+Run:
+
+```bash
+python scripts/verify_threshold.py
+```
+
+Expected results:
+
+- Validation pairs: 400 (200 matching and 200 nonmatching)
+- Selected threshold: 0.306122
+- Validation balanced accuracy: 96.25%
+- Threshold matches: True
+
+The script evaluates 50 candidate thresholds between -1 and 1 using FaceNet similarity scores from the validation dataset. The selected threshold maximizes validation balanced accuracy.
+
+### 10.2 Verify Dataset Separation
+
+Run:
+
+```bash
+python scripts/check_data_leakage.py
+```
+
+Expected results:
+
+- Train/validation shared identities: 0
+- Train/test shared identities: 0
+- Validation/test shared identities: 0
+- Shared images across all splits: 0
+- Incorrect pair labels: 0
+- Incorrect split assignments: 0
+
+These checks verify that the generated training, validation, and test pair datasets contain no overlapping identities or images.
+
+### 10.3 Reproduce Final Model Evaluation
+
+Run:
+
+```bash
+python scripts/evaluate_final.py
+```
+
+The script evaluates the final FaceNet model on all 4,046 held-out LFW test pairs using the validation-selected cosine similarity threshold.
+
+Expected results:
+
+| Metric | Result |
+|---|---:|
+| Total Test Pairs | 4,046 |
+| Accuracy | 94.61% |
+| Balanced Accuracy | 94.61% |
+| Precision | 93.49% |
+| Recall | 95.90% |
+| F1 Score | 94.68% |
+| ROC-AUC | 0.9886 |
+| Decision Threshold | 0.306122 |
+
+The confusion matrix contains:
+
+- True Positives: 1,940
+- True Negatives: 1,888
+- False Positives: 135
+- False Negatives: 83
+
+Evaluation results are saved to `outputs/final_evaluation.json`.
+
+These results demonstrate the final model's performance on the held-out LFW test pairs and provide reproducible checks for threshold selection and internal dataset separation.
 
 ## Final Release
 
 The final system release is tagged:
 
 ```text
-v2.1-final
+v2.2-final
 ```
 
 To check out the tagged version:
 
 ```bash
-git checkout v2.1-final
+git checkout v2.2-final
 ```
 
 See the repository README for additional information about the system architecture, evaluation methodology, and limitations.
