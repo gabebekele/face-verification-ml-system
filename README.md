@@ -45,9 +45,15 @@ The final face verification system uses pretrained InceptionResnetV1 embeddings 
 |---|---|
 | Embedding Model | InceptionResnetV1 (VGGFace2) |
 | Similarity Metric | Cosine Similarity |
+| Test Accuracy | 94.61% |
+| Balanced Accuracy | 94.61% |
+| ROC-AUC | 0.9886 |
+| F1 Score | 94.68% |
+| Held-Out Test Pairs | 4,046 |
 | Operating Threshold | 0.3061 |
 | Average CPU Inference Latency | 0.1312 seconds per pair |
 | CPU Throughput | 7.62 pairs per second |
+
 
 CPU performance was measured on an Intel Core i5-8350U using 25 validation image pairs. The reported latency and throughput represent a local CPU baseline.
 
@@ -419,19 +425,21 @@ Results are saved to:
 outputs/bench_results.txt
 ```
 
-## Reproduce Raw-Pixel Baseline Experiments
+## FaceNet Evaluation Experiments
 
-The evaluation framework supports configuration-driven experimental runs and command-line overrides.
+The evaluation framework supports configuration-driven experiments using pretrained FaceNet embeddings, normalization options, and validation-based threshold selection.
 
-To reproduce the selected Z-score experiment using balanced accuracy for threshold selection:
+The earlier raw-pixel baseline results reported in the Key Results section are historical experiments and are not reproduced by the current FaceNet evaluation pipeline.
+
+To run a FaceNet evaluation using Z-score normalization and balanced accuracy for threshold selection:
 
 ```bash
 python -m src.evaluation --run_id run_3_zscore --norm z-score
 ```
 
-This performs a threshold sweep, selects the operating decision boundary, and generates evaluation artifacts.
+This performs a threshold sweep, selects an operating threshold using validation pairs, and generates evaluation artifacts.
 
-Additional experiments can be reproduced with the following commands.
+Additional FaceNet evaluation experiments can be run using the following commands.
 
 ### Baseline
 
@@ -448,7 +456,7 @@ python -m src.evaluation --run_id run_2 --metric f1
 ### Min-Max Normalization
 
 ```bash
-python -m src.evaluation --run_id run_4 --norm min_max
+python -m src.evaluation --run_id run_4 --norm min-max
 ```
 
 ### Z-Score Normalization with F1 Selection
@@ -513,11 +521,10 @@ docker build -t face-verifier .
 docker run --rm -v "${PWD}:/app" face-verifier python scripts/run_inference.py --config configs/m1.yaml --left lfw/<person_name>/<image_1>.jpg --right lfw/<person_name>/<image_2>.jpg
 ```
 
-Example image paths:
+Example:
 
-```text
-lfw/Zoran_Djindjic/Zoran_Djindjic_0001.jpg
-lfw/Zoran_Djindjic/Zoran_Djindjic_0002.jpg
+```bash
+docker run --rm -v "${PWD}:/app" face-verifier python scripts/run_inference.py --config configs/m1.yaml --left lfw/Zoran_Djindjic/Zoran_Djindjic_0001.jpg --right lfw/Zoran_Djindjic/Zoran_Djindjic_0002.jpg
 ```
 
 Run the command from the project root directory. The LFW dataset must be available locally under `data/lfw`.
