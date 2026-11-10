@@ -418,10 +418,7 @@ errors/fn/
 To compare two face images locally:
 
 ```bash
-python scripts/run_inference.py \
-  --config configs/m1.yaml \
-  --left lfw/<person_name>/<image_1>.jpg \
-  --right lfw/<person_name>/<image_2>.jpg
+python scripts/run_inference.py --config configs/m1.yaml --left lfw/<person_name>/<image_1>.jpg --right lfw/<person_name>/<image_2>.jpg
 ```
 
 Example:
