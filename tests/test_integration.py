@@ -7,7 +7,7 @@ def test_pipeline_integration(tmp_path):
     test_out = tmp_path / "test_outputs"
     
     config = {
-        "data_dir": "data/lfw/downloads/extracted/TAR_GZ.ndownloader.figshare.com_files_5976018BV99nGMtc3Dm-0r8dGjUD5cMNKgNTG9Q_-xj9ajVNsA",
+        "data_dir": "data/lfw",
         "outputs_dir": str(test_out),
         "pairs_paths": {
             "val": "outputs/pairs/val.csv", 
