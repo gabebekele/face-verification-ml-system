@@ -14,4 +14,4 @@ RUN pip install -r requirements-m3.txt
 
 COPY . .
 
-CMD ["python", "run_inference.py"]
+CMD ["python", "scripts/run_inference.py", "--help"]
