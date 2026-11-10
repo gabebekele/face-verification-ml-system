@@ -195,6 +195,30 @@ All three comparisons (train/validation, train/test, and validation/test) return
 
 These checks confirm separation between the generated LFW dataset splits. However, they do not establish whether any LFW identities were included in the external VGGFace2 dataset used to pretrain FaceNet.
 
+### Reproduce Final FaceNet Evaluation
+
+Run the following commands from the project root after preparing the LFW dataset and verification pairs.
+
+Verify the validation-selected threshold:
+
+```bash
+python scripts/verify_threshold.py
+```
+
+Check for overlapping identities and images across dataset splits:
+
+```bash
+python scripts/check_data_leakage.py
+```
+
+Evaluate the final FaceNet model on all 4,046 held-out test pairs:
+
+```bash
+python scripts/evaluate_final.py
+```
+
+The evaluation results are saved to `outputs/final_evaluation.json`.
+
 ## Performance Profiling
 
 The final face verification system includes profiling tools to evaluate CPU inference performance across different batch sizes.
