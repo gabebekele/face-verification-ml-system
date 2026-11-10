@@ -239,13 +239,13 @@ These results demonstrate the final model's performance on the held-out LFW test
 The final system release is tagged:
 
 ```text
-v2.2-final
+v2.3-final
 ```
 
 To check out the tagged version:
 
 ```bash
-git checkout v2.2-final
+git checkout v2.3-final
 ```
 
 See the repository README for additional information about the system architecture, evaluation methodology, and limitations.
