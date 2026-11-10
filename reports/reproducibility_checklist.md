@@ -161,13 +161,13 @@ python -m pytest
 The final system release is tagged:
 
 ```text
-v1.0-final
+v2.0-final
 ```
 
 To check out the tagged version:
 
 ```bash
-git checkout v1.0-final
+git checkout v2.0-final
 ```
 
 See the repository README for additional information about the system architecture, evaluation methodology, and limitations.
