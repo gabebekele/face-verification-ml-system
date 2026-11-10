@@ -160,6 +160,41 @@ Error cases are separated into false-positive and false-negative directories to 
 
 This makes it possible to examine not only aggregate performance metrics, but also the kinds of examples that cause incorrect verification decisions.
 
+
+### Final FaceNet Evaluation
+
+The final FaceNet model was evaluated on 4,046 held-out LFW test pairs, consisting of 2,023 matching and 2,023 nonmatching pairs.
+
+| Metric | Result |
+|---|---:|
+| Accuracy | 94.61% |
+| Balanced Accuracy | 94.61% |
+| Precision | 93.49% |
+| Recall | 95.90% |
+| F1 Score | 94.68% |
+| ROC-AUC | 0.9886 |
+| Decision Threshold | 0.306122 |
+
+The model correctly classified 3,828 of the 4,046 test pairs. The confusion matrix included 1,940 true positives, 1,888 true negatives, 135 false positives, and 83 false negatives.
+
+These results demonstrate strong verification performance on the evaluated LFW test pairs.
+
+### Threshold Selection and Verification
+
+The decision threshold was selected using 400 balanced validation pairs (200 matching and 200 nonmatching). A grid search evaluated 50 candidate thresholds between -1 and 1, selecting the threshold that maximized validation balanced accuracy.
+
+The selected threshold of `0.306122` achieved **96.25% validation balanced accuracy**. A separate verification run reproduced the same threshold using the FaceNet embedding pipeline.
+
+The threshold was applied to the held-out test set without further adjustment.
+
+### Data Leakage Verification
+
+The generated training, validation, and test pair datasets were checked for overlapping identities and images.
+
+All three comparisons (train/validation, train/test, and validation/test) returned **zero shared identities and zero shared images**. Pair labels and split assignments were also verified for consistency.
+
+These checks confirm separation between the generated LFW dataset splits. However, they do not establish whether any LFW identities were included in the external VGGFace2 dataset used to pretrain FaceNet.
+
 ## Performance Profiling
 
 The final face verification system includes profiling tools to evaluate CPU inference performance across different batch sizes.
@@ -217,7 +252,7 @@ A detailed reproducibility checklist is included [here](reports/reproducibility_
 The final system version is tagged:
 
 ```text
-v2.0-final
+v2.1-final
 ```
 
 ## Repository Structure
