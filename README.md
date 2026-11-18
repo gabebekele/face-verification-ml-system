@@ -257,7 +257,7 @@ Throughput improved as more image pairs were processed, reaching approximately *
 
 The single-pair run was substantially slower, likely due to initialization or model warmup overhead. These results represent local CPU performance and may vary across hardware and execution environments.
 
-The complete profiling methodology and latency breakdowns are available in the [Profiling Report](reports/Profiling%20report.pdf).
+The complete profiling methodology and latency breakdowns are available in the [Profiling Report](reports/Profiling_Report.pdf).
 
 ## Engineering and Reproducibility
 
